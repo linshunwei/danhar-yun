@@ -1,0 +1,26 @@
+{
+    "name": "linshunwei/danhar-yun",
+    "description": "统一会员中心接口",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "linshunwei",
+            "email": "2236650223@qq.com"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^6.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Linshunwei\\DanharYun\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Linshunwei\\DanharYun\\DanharYunServiceProvider"
+            ]
+        }
+    }
+}
