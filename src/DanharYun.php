@@ -33,6 +33,10 @@ class DanharYun
 		$this->callback_url = config('danhar-yun.callback_url');
 	}
 
+	/**
+	 *  web 认证
+	 * 单点登录授权地址
+	 */
 	public function getOauthUrl()
 	{
 		$data = [
@@ -44,6 +48,35 @@ class DanharYun
 		$url = $this->authorization_url.'?' . http_build_query($data);
 		return $url;
 	}
+
+	/**
+	 * code 获取token
+	 */
+	public function getOauthToken($code)
+	{
+		$data = [
+			'grant_type' => 'authorization_code',
+			'client_id' => $this->client_id,
+			'client_secret' => $this->client_secret,
+			'redirect_uri' => $this->callback_url,
+			'code' => $code,
+		];
+		$result = $this->request_post($this->token_url, $data);
+		return $result;
+
+	}
+
+	protected function setOauthToken($code)
+	{
+		$result = $this->getOauthToken($code);
+		if (array_key_exists('access_token', $result)) {
+			$this->setToken($result['access_token']);
+		}
+	}
+
+	/**
+	 *  获取授权令牌
+	 */
 
 	/**************************** 客户端认证 ***********************************************************/
 	/**
