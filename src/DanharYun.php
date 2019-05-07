@@ -11,25 +11,41 @@ use Illuminate\Support\Facades\Log;
  */
 class DanharYun
 {
-	private $app_id = '';
-	private $app_secret = '';
-	private $host = "";
-	private $oauth_host = "";
-	private $admin_host = "";
+	private $client_id = '';
+	private $client_secret = '';
+	private $host = '';
+	private $authorization_url = '';
+	private $token_url = '';
+	private $admin_host = '';
+	private $callback_url = '';
 
 	private $token = '';
 
 
 	public function __construct()
 	{
-		$this->app_id = config('danhar-yun.app_id');
-		$this->app_secret = config('danhar-yun.app_secret');
+		$this->client_id = config('danhar-yun.client_id');
+		$this->client_secret = config('danhar-yun.client_secret');
 		$this->host = config('danhar-yun.host');
-		$this->oauth_host = config('danhar-yun.oauth_host');
+		$this->authorization_url = config('danhar-yun.authorization_url');
+		$this->token_url = config('danhar-yun.token_url');
 		$this->admin_host = config('danhar-yun.admin_host');
+		$this->callback_url = config('danhar-yun.callback_url');
 	}
 
-/**************************** 客户端认证 ***********************************************************/
+	public function getOauthUrl()
+	{
+		$data = [
+			'client_id' => $this->client_id,
+			'redirect_uri' => $this->callback_url,
+			'response_type' => 'code',
+			'scope' => '*',
+		];
+		$url = $this->authorization_url.'?' . http_build_query($data);
+		return $url;
+	}
+
+	/**************************** 客户端认证 ***********************************************************/
 	/**
 	 * 注册
 	 * @param string $mobile
@@ -113,7 +129,7 @@ class DanharYun
 		$this->setClientToken();
 		$file_id = '';
 		if ($real_path) {
-			$file = $this->postFile( $real_path);
+			$file = $this->postFile($real_path);
 
 			if (!is_null($file)) {
 				$file_id = $file['id'];
@@ -122,7 +138,7 @@ class DanharYun
 		$data = [
 			'picture_id' => $file_id
 		];
-		return $this->request_get($this->host . '/api/card/info',$data);
+		return $this->request_get($this->host . '/api/card/info', $data);
 	}
 
 	/**
@@ -137,7 +153,7 @@ class DanharYun
 
 		$data = [
 			[
-				'name'     => 'file',
+				'name' => 'file',
 				'contents' => fopen($real_path, 'r')
 			],
 		];
@@ -150,11 +166,11 @@ class DanharYun
 	{
 		$data = [
 			'grant_type' => 'client_credentials',
-			'client_id' => $this->app_id,
-			'client_secret' => $this->app_secret,
+			'client_id' => $this->client_id,
+			'client_secret' => $this->client_secret,
 			'scope' => '*',
 		];
-		$result = $this->request_post($this->oauth_host."/token", $data);
+		$result = $this->request_post($this->token_url, $data);
 		return $result;
 
 	}
@@ -167,9 +183,9 @@ class DanharYun
 		}
 	}
 
-	protected function setUserToken($username,$password)
+	protected function setUserToken($username, $password)
 	{
-		$result = $this->getUserToken($username,$password);
+		$result = $this->getUserToken($username, $password);
 		if (array_key_exists('access_token', $result)) {
 			$this->setToken($result['access_token']);
 		}
@@ -187,11 +203,11 @@ class DanharYun
 			'grant_type' => 'password',
 			'username' => $username,
 			'password' => $password,
-			'client_id' => $this->app_id,
-			'client_secret' => $this->app_secret,
+			'client_id' => $this->client_id,
+			'client_secret' => $this->client_secret,
 			'scope' => '*',
 		];
-		$result = $this->request_post($this->oauth_host."/token", $data);
+		$result = $this->request_post($this->token_url, $data);
 		return $result;
 	}
 
@@ -274,7 +290,7 @@ class DanharYun
 
 		$file_id = '';
 		if ($video_path) {
-			$file = $this->postFile( $video_path);
+			$file = $this->postFile($video_path);
 
 			if (!is_null($file)) {
 				$file_id = $file['id'];
@@ -384,7 +400,7 @@ class DanharYun
 
 	protected function setAdminToken($admin_token)
 	{
-			$this->token = $admin_token;
+		$this->token = $admin_token;
 	}
 
 	/**
@@ -399,10 +415,10 @@ class DanharYun
 			'form_params' => $data,
 		];
 
-		$header['accept']= 'application/json';
+		$header['accept'] = 'application/json';
 
 		if ($this->token) {
-			$header['Authorization'] ="Bearer ". $this->token;
+			$header['Authorization'] = "Bearer " . $this->token;
 		}
 		if ($header) {
 			$_data['headers'] = $header;
@@ -423,9 +439,10 @@ class DanharYun
 	 * @return array|void
 	 * @throws \GuzzleHttp\Exception\GuzzleException
 	 */
-	private function request_put($url, $data){
+	private function request_put($url, $data)
+	{
 		$_data = [
-			'multipart' =>$data
+			'multipart' => $data
 		];
 
 		$client = new Client();
@@ -443,9 +460,9 @@ class DanharYun
 			'query' => $data,
 		];
 
-		$header['accept']= 'application/json';
+		$header['accept'] = 'application/json';
 		if ($this->token) {
-			$header['Authorization'] = "Bearer ".$this->token;
+			$header['Authorization'] = "Bearer " . $this->token;
 		}
 		if ($header) {
 			$_data['headers'] = $header;

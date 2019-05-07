@@ -8,7 +8,7 @@ return [
    |
    */
 
-	'host' => env('DANHAR_YUN_HOST',''),
+	'host' => env('DANHAR_YUN_HOST','https://demo-userapi.danhar.com'),
 
 	/*
    |--------------------------------------------------------------------------
@@ -16,14 +16,15 @@ return [
    |--------------------------------------------------------------------------
    |
    */
-	'admin_host' => env('DANHAR_YUN_ADMIN_HOST',''),
+	'admin_host' => env('DANHAR_YUN_ADMIN_HOST','https://demo-adminapi.danhar.com'),
 	/*
    |--------------------------------------------------------------------------
    | 授权 接口服务器
    |--------------------------------------------------------------------------
    |
    */
-	'oauth_host' => env('DANHAR_YUN_OAUTH_HOST',''),
+	'token_url' => env('DANHAR_YUN_OAUTH_TOKEN_URL','https://demo-oauth.danhar.com/token'),
+	'authorization_url' => env('DANHAR_YUN_OAUTH_AUTHORIZATIION_URL','https://demo-oauth.danhar.com/authorize'),
 
 	/*
    |--------------------------------------------------------------------------
@@ -31,7 +32,7 @@ return [
    |--------------------------------------------------------------------------
    |
    */
-	'callback_url' => env('DANHAR_YUN_CALLBACK_URL',''),
-	'app_id' => env('DANHAR_YUN_APP_ID',''),
-	'app_secret' =>  env('DANHAR_YUN_APP_SECRET',''),
+	'callback_url' => env('DANHAR_YUN_CALLBACK_URL','https://demo-userapi.danhar.com/api/oauth2-callback'),
+	'client_id' => env('DANHAR_YUN_CLIENT_ID','201905050435075442'),
+	'client_secret' =>  env('DANHAR_YUN_CLIENT_SECRET','76765ea971fdcab222c28ca027378efb'),
 ];
