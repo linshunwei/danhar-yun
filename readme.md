@@ -31,6 +31,7 @@ php artisan vendor:publish --provider="Linshunwei\DanharYun\DanharYunServiceProv
 'callback_url' => env('DANHAR_YUN_CALLBACK_URL',''), //回调服务器
 'client_id' => env('DANHAR_YUN_CLIENT_ID',''),
 'client_secret' =>  env('DANHAR_YUN_CLIENT_SECRET',''),
+'log_debug' =>  env('DANHAR_YUN_LOG_DEBUG',false), //是否开启日志 /logs/danhar_yun目录
 ```
 
 或者直接在 `.env` 文件中设置需要修改的内容，没有特殊情况默认即可

@@ -35,4 +35,5 @@ return [
 	'callback_url' => env('DANHAR_YUN_CALLBACK_URL',''),
 	'client_id' => env('DANHAR_YUN_CLIENT_ID',''),
 	'client_secret' =>  env('DANHAR_YUN_CLIENT_SECRET',''),
+	'log_debug' =>  env('DANHAR_YUN_LOG_DEBUG',false),
 ];

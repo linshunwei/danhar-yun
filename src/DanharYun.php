@@ -3,7 +3,8 @@
 namespace Linshunwei\DanharYun;
 
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Log;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 /**
  *  东合公共会员类
@@ -18,6 +19,7 @@ class DanharYun
 	private $token_url = '';
 	private $admin_host = '';
 	private $callback_url = '';
+	private $log_debug = '';
 
 	private $token = '';
 
@@ -31,6 +33,29 @@ class DanharYun
 		$this->token_url = config('danhar-yun.token_url');
 		$this->admin_host = config('danhar-yun.admin_host');
 		$this->callback_url = config('danhar-yun.callback_url');
+		$this->log_debug = config('danhar-yun.log_debug');
+	}
+
+	/**
+	 * 日志记录
+	 * @param $message
+	 * @param array $content
+	 * @throws \Exception
+	 */
+	private function writeLogger($message, $content = [])
+	{
+		$logger = new Logger('log');
+		$logger->pushHandler(new StreamHandler(storage_path('logs/danhar_yun/' . date('Y-m-d') . '.log'), Logger::DEBUG));
+		$logger->debug($message, $content);
+	}
+
+	public function logger($url = '', $data = [], $content = [])
+	{
+		if ($this->log_debug){
+			$this->writeLogger('host', [$url]);
+			$this->writeLogger('request', $data);
+			$this->writeLogger('response', $content);
+		}
 	}
 
 	/**
@@ -45,7 +70,7 @@ class DanharYun
 			'response_type' => 'code',
 			'scope' => '*',
 		];
-		$url = $this->authorization_url.'?' . http_build_query($data);
+		$url = $this->authorization_url . '?' . http_build_query($data);
 		return $url;
 	}
 
@@ -459,10 +484,11 @@ class DanharYun
 		$client = new Client();
 		$res = $client->request('Post', $url, $_data);
 
-//		Log::info('data',$_data);
-//		Log::info((string)$res->getBody());
+		$content = $this->object_to_array(json_decode($res->getBody()->getContents()));
+		//todo 日志
+		$this->logger($url,$_data,$content);
 
-		return $this->object_to_array(json_decode($res->getBody()->getContents()));
+		return $content;
 	}
 
 	/**
@@ -481,10 +507,11 @@ class DanharYun
 		$client = new Client();
 		$res = $client->request('Post', $url, $_data);
 
-//		Log::info('上传图片');
-//		Log::info((string)$res->getBody());
+		$content = $this->object_to_array(json_decode($res->getBody()->getContents()));
+		//todo 日志
+		$this->logger($url,$_data,$content);
 
-		return $this->object_to_array(json_decode($res->getBody()->getContents()));
+		return $content;
 	}
 
 	private function request_get($url, $data = null)
@@ -502,9 +529,12 @@ class DanharYun
 		}
 		$client = new Client();
 		$res = $client->request('Get', $url, $_data);
-//		Log::info('data',$_data);
-//		Log::info((string)$res->getBody());
-		return $this->object_to_array(json_decode($res->getBody()->getContents()));
+
+		$content = $this->object_to_array(json_decode($res->getBody()->getContents()));
+		//todo 日志
+		$this->logger($url,$_data,$content);
+
+		return $content;
 	}
 
 	private function object_to_array($obj)
