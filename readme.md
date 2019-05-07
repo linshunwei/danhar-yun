@@ -24,25 +24,24 @@ php artisan vendor:publish --provider="Linshunwei\DanharYun\DanharYunServiceProv
 
 修改配置文件 `config/danhar-yun.php`
 ```php
-    'host' => env('DANHAR_YUN_HOST',''), //会员服务器
-   	'admin_host' => env('DANHAR_YUN_ADMIN_HOST',''), //管理后台服务器
-   	'oauth_host' => env('DANHAR_YUN_OAUTH_HOST',''), //授权服务器
-   	'callback_url' => env('DANHAR_YUN_CALLBACK_URL',''), //回调服务器
-   	'client_id' => env('DANHAR_YUN_CLIENT_ID',''),
-    'client_secret' =>  env('DANHAR_YUN_CLIENT_SECRET',''),
+'host' => env('DANHAR_YUN_HOST',''), //会员服务器
+'admin_host' => env('DANHAR_YUN_ADMIN_HOST',''), //管理后台服务器
+'token_url' => env('DANHAR_YUN_OAUTH_TOKEN_URL',''),
+'authorization_url' => env('DANHAR_YUN_OAUTH_AUTHORIZATIION_URL',''),
+'callback_url' => env('DANHAR_YUN_CALLBACK_URL',''), //回调服务器
+'client_id' => env('DANHAR_YUN_CLIENT_ID',''),
+'client_secret' =>  env('DANHAR_YUN_CLIENT_SECRET',''),
 ```
 
 或者直接在 `.env` 文件中设置需要修改的内容，没有特殊情况默认即可
 ```
 DANHAR_YUN_HOST=127.0.0.1
-DANHAR_YUN_APP_ID=xxxx
-DANHAR_YUN_APP_SECRET=xxx
+DANHAR_YUN_CLIENT_ID=xxxx
+DANHAR_YUN_CLIENT_SECRET=xxx
 ......
 ```
 代码调用 消息列表+
 ```php
-use Linshunwei\DanharYun\DanharYun;
-
     $yun = new DanharYun();
     $res = $yun->getParameterItem('xxx');
 ```
